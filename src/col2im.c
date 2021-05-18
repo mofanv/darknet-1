@@ -1,6 +1,5 @@
 #include <stdio.h>
 #include <math.h>
-
 /*
 *  将输入图像im的channel通道上的第row行，col列像素灰度值加上val（直接修改im的值，因此im相当于是返回值）
 ** 输入： im         输入图像
@@ -24,7 +23,6 @@ void col2im_add_pixel(float *im, int height, int width, int channels,
         row >= height || col >= width) return;
     im[col + width*(row + height*channel)] += val;
 }
-
 /*
 ** 此函数与im2col_cpu()函数的流程相反，目地是将im2col_cpu()函数重排得到的图片data_col恢复至正常的图像矩阵排列，并与data_im相加，最终data_im相当于是输出值，
 ** 要注意的是，data_im的尺寸是在函数外确定的，且并没有显示的将data_col转为一个与data_im尺寸相同的矩阵，而是将其中元素直接加在data_im对应元素上（data_im初始所有元素值都为0）。
@@ -69,8 +67,7 @@ void col2im_add_pixel(float *im, int height, int width, int channels,
 **      为方便，我们记27*2的矩阵为a，记2*4矩阵为b，那么a中一行（2个元素）与b中一列（2个元素）相乘对应这什么呢？对应第一情况，因为有两个卷积核，使得L-1中一个输出至少与L层中两个输出有关系，经此矩阵相乘，得到27*4的矩阵，
 **      已经考虑了第一种情况（27*4这个矩阵中的每一个元素都是两个卷积核影响结果的求和），那么接下来的就是要考虑第二种情况：卷积核重叠导致的一对多关系，具体做法就是将data_col中对应相同像素的值相加，这是由
 **      im2col_cpu()函数决定的（可以配合im2col_cpu()来理解），因为im2col_cpu()将这些重叠元素也铺陈保存在data_col中，所以接下来，只要按照im2col_cpu()逆向将这些重叠元素的影响叠加就可以了，
-**      大致就是这个思路，具体的实现细节可能得见个人博客了（这段写的有点罗嗦～）。
-**       
+**      大致就是这个思路，具体的实现细节可能得见个人博客了（这段写的有点罗嗦～）。       
 */
 void col2im_cpu(float* data_col,
          int channels,  int height,  int width,
